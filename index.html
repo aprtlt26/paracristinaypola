@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="Terapia de sonido para Pola - Cuidados paliativos caninos">
+    <meta name="author" content="Para Pola con amor">
+    <title>🌿 Abrazo sonoro para Pola · Cuidados Paliativos</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: radial-gradient(circle at 30% 10%, #f5e6d3, #d9c2a7, #b8956e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: "🐾🐾🐾";
+            position: fixed;
+            bottom: 10px;
+            left: 15px;
+            font-size: 28px;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "❤️ Pola";
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,235,205,0.6);
+            padding: 5px 12px;
+            border-radius: 60px;
+            backdrop-filter: blur(6px);
+            color: #4a2c1a;
+            font-weight: 500;
+            pointer-events: none;
+        }
+
+        .pola-container {
+            max-width: 750px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+        }
+
+        .pola-message {
+            background: rgba(255, 245, 230, 0.3);
+            backdrop-filter: blur(12px);
+            border-radius: 68px;
+            padding: 16px 24px;
+            text-align: center;
+            border: 1px solid rgba(255, 220, 160, 0.7);
+        }
+
+        .pola-message h2 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: #fff3e4;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .pola-message p {
+            color: #fff0df;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+
+        .boxes-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            margin: 10px 0;
+        }
+
+        .box {
+            width: 160px;
+            height: 160px;
+            background: rgba(235, 205, 165, 0.55);
+            backdrop-filter: blur(6px);
+            border-radius: 42px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1.5px solid rgba(255, 235, 190, 0.7);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+            text-align: center;
+            gap: 12px;
+        }
+
+        .box i {
+            font-size: 3.2rem;
+            color: #fff2df;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .box span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #fff6ea;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 60px;
+        }
+
+        .box.active {
+            background: rgba(255, 225, 170, 0.85);
+            transform: scale(1.02);
+            border: 2px solid #ffdd99;
+            box-shadow: 0 0 28px rgba(255,200,120,0.6);
+        }
+
+        .mode-indicator {
+            margin-top: 5px;
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 12px;
+            border-radius: 50px;
+            color: #ffe6b3;
+        }
+
+        .sound-studio {
+            background: rgba(35, 25, 18, 0.55);
+            backdrop-filter: blur(18px);
+            border-radius: 56px;
+            padding: 18px 20px;
+            width: 100%;
+            border: 1px solid rgba(255, 215, 155, 0.6);
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sound-studio.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .controls-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 22px;
+            row-gap: 18px;
+        }
+
+        .knob {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 100px;
+        }
+
+        .knob label {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: #fff1de;
+            font-weight: 600;
+            background: rgba(0,0,0,0.4);
+            padding: 3px 12px;
+            border-radius: 50px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 130px;
+            height: 3px;
+            background: #ecd9bf;
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #ffddbb;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #b97f4b;
+        }
+
+        .valor {
+            font-size: 0.65rem;
+            font-family: 'JetBrains Mono', monospace;
+            background: #2c1d12a0;
+            padding: 2px 8px;
+            border-radius: 30px;
+            color: #ffe1b9;
+        }
+
+        .boton-silencio {
+            background: rgba(230, 190, 140, 0.7);
+            border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            padding: 8px 22px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #352415;
+            margin-top: 8px;
+        }
+
+        .soft-buttons {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            margin: 5px 0;
+        }
+
+        .soft-btn {
+            background: rgba(255, 235, 200, 0.75);
+            border: none;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 8px 24px;
+            border-radius: 48px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #442f1e;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-pola {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .modal-pola.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: #ffe7cf;
+            border-radius: 52px;
+            padding: 28px 20px;
+            text-align: center;
+            width: 280px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #472e1b;
+        }
+
+        .modal-card button {
+            background: #b47c48;
+            border: none;
+            padding: 8px 25px;
+            border-radius: 50px;
+            color: white;
+            margin-top: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media (max-width: 550px) {
+            .box {
+                width: 130px;
+                height: 130px;
+            }
+            .controls-grid {
+                gap: 12px;
+            }
+            input[type="range"] {
+                width: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="pola-container">
+    <div class="pola-message">
+        <h2>🐕✨ Respira con Pola </h2>
+        <p>sonido envolvente · cuidado paliativo · abrazo sonoro</p>
+    </div>
+
+    <div class="boxes-area">
+        <div class="box" data-mode="sound" id="soundBox">
+            <i class="fas fa-head-side-medical"></i>
+            <span>♡ sonido calmante ♡</span>
+            <div class="mode-indicator" id="soundModeText">ruido blanco suave</div>
+        </div>
+        <div class="box" data-mode="breath" id="breathBox">
+            <i class="fas fa-lungs"></i>
+            <span>respira con Pola</span>
+            <div class="mode-indicator" id="breathModeText">ritmo respiratorio</div>
+        </div>
+        <div class="box" data-mode="rest" id="restBox">
+            <i class="fas fa-bed-pulse"></i>
+            <span>descanso profundo</span>
+            <div class="mode-indicator" id="restModeText">delta + silencio</div>
+        </div>
+    </div>
+
+    <div class="soft-buttons">
+        <button class="soft-btn" id="quietNowBtn"><i class="fas fa-volume-mute"></i> silencio</button>
+        <button class="soft-btn" id="softResetBtn"><i class="fas fa-heart"></i> restaurar Pola</button>
+    </div>
+
+    <div id="soundStudio" class="sound-studio">
+        <div class="controls-grid">
+            <div class="knob"><label><i class="fas fa-waveform"></i> volumen</label><input type="range" id="volControl" min="0" max="1" step="0.01" value="0.45"><div id="volVal" class="valor">45%</div></div>
+            <div class="knob"><label><i class="fas fa-filter"></i> suavidad</label><input type="range" id="freqControl" min="100" max="1500" step="10" value="460"><div id="freqVal" class="valor">460 Hz</div></div>
+            <div class="knob"><label><i class="fas fa-dove"></i> resonancia</label><input type="range" id="resonControl" min="0.5" max="6" step="0.1" value="1.2"><div id="resVal" class="valor">1.2</div></div>
+            <div class="knob"><label><i class="fas fa-heartbeat"></i> pulso</label><input type="range" id="lfoControl" min="0" max="1.5" step="0.02" value="0.28"><div id="lfoVal" class="valor">0.28 Hz</div></div>
+            <div class="knob"><label><i class="fas fa-feather"></i> caricia</label><input type="range" id="depthControl" min="0" max="0.5" step="0.01" value="0.22"><div id="depthVal" class="valor">0.22</div></div>
+        </div>
+        <div style="text-align: center; margin-top: 12px;">
+            <button id="stopSoundBtnLocal" class="boton-silencio"><i class="fas fa-pause-circle"></i> silenciar ahora</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalPola" class="modal-pola">
+    <div class="modal-card">
+        <i class="fas fa-paw" style="font-size: 2rem;"></i>
+        <p style="margin: 12px 0;">Activar sonido cálido para Pola 🌾</p>
+        <button id="confirmSoundBtn">sí, con amor</button>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 20px; font-size: 0.7rem; opacity: 0.8;">
+    🐾 para Cristina que ama a Pola con alma de perrita. 
+</div>
+
+<script>
+    let audioCtx = null;
+    let noiseSource = null;
+    let filterEQ = null;
+    let masterGain = null;
+    let lfoOsc = null;
+    let lfoGainMod = null;
+    let isPlaying = false;
+    let permissionGranted = false;
+    let currentMode = "sound";
+
+    // Elementos
+    const soundBox = document.getElementById('soundBox');
+    const breathBox = document.getElementById('breathBox');
+    const restBox = document.getElementById('restBox');
+    const studioPanel = document.getElementById('soundStudio');
+    const volSlider = document.getElementById('volControl');
+    const freqSlider = document.getElementById('freqControl');
+    const resonSlider = document.getElementById('resonControl');
+    const lfoSlider = document.getElementById('lfoControl');
+    const depthSlider = document.getElementById('depthControl');
+    const volVal = document.getElementById('volVal');
+    const freqVal = document.getElementById('freqVal');
+    const resVal = document.getElementById('resVal');
+    const lfoVal = document.getElementById('lfoVal');
+    const depthVal = document.getElementById('depthVal');
+    const modal = document.getElementById('modalPola');
+    const confirmBtn = document.getElementById('confirmSoundBtn');
+    const stopBtn = document.getElementById('stopSoundBtnLocal');
+    const quietBtn = document.getElementById('quietNowBtn');
+    const softReset = document.getElementById('softResetBtn');
+
+    const allBoxes = [soundBox, breathBox, restBox];
+
+    // Funciones de audio
+    function buildAndStartSound() {
+        if (!permissionGranted) {
+            modal.classList.add('show');
+            return false;
+        }
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (isPlaying && noiseSource) {
+            return true;
+        }
+
+        try {
+            if (noiseSource) {
+                try { noiseSource.stop(); } catch(e) {}
+            }
+            const bufferLen = audioCtx.sampleRate * 3;
+            const noiseBuff = audioCtx.createBuffer(1, bufferLen, audioCtx.sampleRate);
+            const data = noiseBuff.getChannelData(0);
+            for (let i = 0; i < bufferLen; i++) data[i] = (Math.random() * 2) - 1;
+            
+            noiseSource = audioCtx.createBufferSource();
+            noiseSource.buffer = noiseBuff;
+            noiseSource.loop = true;
+
+            filterEQ = audioCtx.createBiquadFilter();
+            filterEQ.type = "lowpass";
+            filterEQ.frequency.value = parseFloat(freqSlider.value);
+            filterEQ.Q.value = parseFloat(resonSlider.value);
+
+            masterGain = audioCtx.createGain();
+            masterGain.gain.value = parseFloat(volSlider.value);
+
+            if (lfoOsc) {
+                try { lfoOsc.stop(); } catch(e) {}
+            }
+            lfoOsc = audioCtx.createOscillator();
+            lfoOsc.type = "sine";
+            lfoOsc.frequency.value = parseFloat(lfoSlider.value);
+            lfoGainMod = audioCtx.createGain();
+            lfoGainMod.gain.value = parseFloat(depthSlider.value);
+            lfoOsc.connect(lfoGainMod);
+            lfoGainMod.connect(masterGain.gain);
+            lfoOsc.start();
+
+            noiseSource.connect(filterEQ);
+            filterEQ.connect(masterGain);
+            masterGain.connect(audioCtx.destination);
+            noiseSource.start();
+
+            isPlaying = true;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            studioPanel.classList.add('active');
+            return true;
+        } catch(err) { return false; }
+    }
+
+    function stopSound() {
+        if (noiseSource) {
+            try { noiseSource.stop(); } catch(e) {}
+            noiseSource = null;
+        }
+        if (lfoOsc) {
+            try { lfoOsc.stop(); } catch(e) {}
+            lfoOsc = null;
+        }
+        isPlaying = false;
+        studioPanel.classList.remove('active');
+    }
+
+    function applySoundPreset(freq, resonance, lfoFreq, depth, vol, modeLabel) {
+        freqSlider.value = freq;
+        resonSlider.value = resonance;
+        lfoSlider.value = lfoFreq;
+        depthSlider.value = depth;
+        volSlider.value = vol;
+        
+        updateUIValues();
+        if (filterEQ) {
+            filterEQ.frequency.value = freq;
+            filterEQ.Q.value = resonance;
+        }
+        if (masterGain) masterGain.gain.value = vol;
+        if (lfoOsc && lfoGainMod) {
+            lfoOsc.frequency.value = lfoFreq;
+            lfoGainMod.gain.value = depth;
+        }
+    }
+
+    function updateUIValues() {
+        volVal.innerText = Math.round(volSlider.value * 100) + '%';
+        freqVal.innerText = freqSlider.value + ' Hz';
+        resVal.innerText = parseFloat(resonSlider.value).toFixed(1);
+        lfoVal.innerText = parseFloat(lfoSlider.value).toFixed(2) + ' Hz';
+        depthVal.innerText = parseFloat(depthSlider.value).toFixed(2);
+    }
+
+    // Configurar modo RESPIRACIÓN (ritmo lento y calmado)
+    function setBreathMode() {
+        currentMode = "breath";
+        applySoundPreset(380, 1.5, 0.18, 0.18, 0.4, "respiración");
+        if (isPlaying) {
+            // asegurar que se actualice el LFO en vivo
+            if (lfoOsc) lfoOsc.frequency.value = 0.18;
+            if (lfoGainMod) lfoGainMod.gain.value = 0.18;
+            if (filterEQ) {
+                filterEQ.frequency.value = 380;
+                filterEQ.Q.value = 1.5;
+            }
+            if (masterGain) masterGain.gain.value = 0.4;
+        }
+    }
+
+    // Configurar modo DESCANSO PROFUNDO (muy grave, casi latido, bajo volumen)
+    function setRestMode() {
+        currentMode = "rest";
+        applySoundPreset(210, 2.2, 0.1, 0.12, 0.32, "descanso");
+        if (isPlaying) {
+            if (lfoOsc) lfoOsc.frequency.value = 0.1;
+            if (lfoGainMod) lfoGainMod.gain.value = 0.12;
+            if (filterEQ) {
+                filterEQ.frequency.value = 210;
+                filterEQ.Q.value = 2.2;
+            }
+            if (masterGain) masterGain.gain.value = 0.32;
+        }
+    }
+
+    // Modo sonido calmante base
+    function setSoundMode() {
+        currentMode = "sound";
+        applySoundPreset(460, 1.2, 0.28, 0.22, 0.45, "calma");
+        if (isPlaying) {
+            if (lfoOsc) lfoOsc.frequency.value = 0.28;
+            if (lfoGainMod) lfoGainMod.gain.value = 0.22;
+            if (filterEQ) {
+                filterEQ.frequency.value = 460;
+                filterEQ.Q.value = 1.2;
+            }
+            if (masterGain) masterGain.gain.value = 0.45;
+        }
+    }
+
+    function activateBox(box) {
+        allBoxes.forEach(b => b.classList.remove('active'));
+        box.classList.add('active');
+    }
+
+    // Eventos de las cajas
+    soundBox.addEventListener('click', () => {
+        activateBox(soundBox);
+        setSoundMode();
+        if (!isPlaying) {
+            buildAndStartSound();
+        } else {
+            // si ya suena, solo se aplica el preset
+        }
+    });
+
+    breathBox.addEventListener('click', () => {
+        activateBox(breathBox);
+        setBreathMode();
+        if (!isPlaying) {
+            buildAndStartSound();
+        }
+    });
+
+    restBox.addEventListener('click', () => {
+        activateBox(restBox);
+        setRestMode();
+        if (!isPlaying) {
+            buildAndStartSound();
+        }
+    });
+
+    // Controles manuales
+    volSlider.addEventListener('input', () => { if (masterGain) masterGain.gain.value = parseFloat(volSlider.value); volVal.innerText = Math.round(volSlider.value*100)+'%'; });
+    freqSlider.addEventListener('input', () => { if (filterEQ) filterEQ.frequency.value = parseFloat(freqSlider.value); freqVal.innerText = freqSlider.value+' Hz'; });
+    resonSlider.addEventListener('input', () => { if (filterEQ) filterEQ.Q.value = parseFloat(resonSlider.value); resVal.innerText = parseFloat(resonSlider.value).toFixed(1); });
+    lfoSlider.addEventListener('input', () => { if (lfoOsc) lfoOsc.frequency.value = parseFloat(lfoSlider.value); lfoVal.innerText = parseFloat(lfoSlider.value).toFixed(2)+' Hz'; });
+    depthSlider.addEventListener('input', () => { if (lfoGainMod) lfoGainMod.gain.value = parseFloat(depthSlider.value); depthVal.innerText = parseFloat(depthSlider.value).toFixed(2); });
+
+    confirmBtn.addEventListener('click', () => {
+        permissionGranted = true;
+        modal.classList.remove('show');
+        if (soundBox.classList.contains('active') || breathBox.classList.contains('active') || restBox.classList.contains('active')) {
+            buildAndStartSound();
+        }
+    });
+
+    function fullSilence() {
+        stopSound();
+        allBoxes.forEach(b => b.classList.remove('active'));
+    }
+    stopBtn.addEventListener('click', fullSilence);
+    quietBtn.addEventListener('click', fullSilence);
+
+    softReset.addEventListener('click', () => {
+        if (currentMode === "breath") setBreathMode();
+        else if (currentMode === "rest") setRestMode();
+        else setSoundMode();
+        if (!isPlaying && (soundBox.classList.contains('active') || breathBox.classList.contains('active') || restBox.classList.contains('active'))) {
+            buildAndStartSound();
+        }
+    });
+
+    updateUIValues();
+</script>
+</body>
+</html>
